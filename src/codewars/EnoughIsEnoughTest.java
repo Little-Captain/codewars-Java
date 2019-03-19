@@ -1,4 +1,4 @@
-package Fundamentals;
+package codewars;
 import static org.junit.Assert.assertArrayEquals;
 
 import org.junit.Test;

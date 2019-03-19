@@ -1,4 +1,4 @@
-package Fundamentals;
+package codewars;
 import java.util.*;
 
 public class SmileFaces {

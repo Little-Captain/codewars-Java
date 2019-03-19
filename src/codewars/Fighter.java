@@ -1,4 +1,4 @@
-package Fundamentals;
+package codewars;
 
 public class Fighter {
     public String name;

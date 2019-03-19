@@ -1,7 +1,11 @@
-package Fundamentals;
+package codewars;
+
 import org.junit.Test;
+
 import static org.junit.Assert.assertEquals;
-import org.junit.runners.JUnit4;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.assertThat;
+
 
 public class SolutionTest {
     @Test
@@ -35,8 +39,8 @@ public class SolutionTest {
 
     @Test
     public void basicTests() {
-        assertEquals("Lew", Kata.declareWinner(new Fighter("Lew", 10, 2),new Fighter("Harry", 5, 4), "Lew"));
-        assertEquals("Harry", Kata.declareWinner(new Fighter("Lew", 10, 2),new Fighter("Harry", 5, 4), "Harry"));
+        assertEquals("Lew", Kata.declareWinner(new Fighter("Lew", 10, 2), new Fighter("Harry", 5, 4), "Lew"));
+        assertEquals("Harry", Kata.declareWinner(new Fighter("Lew", 10, 2), new Fighter("Harry", 5, 4), "Harry"));
         assertEquals("Harald", Kata.declareWinner(new Fighter("Harald", 20, 5), new Fighter("Harry", 5, 4), "Harry"));
         assertEquals("Harald", Kata.declareWinner(new Fighter("Harald", 20, 5), new Fighter("Harry", 5, 4), "Harald"));
         assertEquals("Harald", Kata.declareWinner(new Fighter("Jerry", 30, 3), new Fighter("Harald", 20, 5), "Jerry"));
@@ -45,15 +49,24 @@ public class SolutionTest {
 
     @Test
     public void testNormalCondition() {
-        assertEquals(9, Solution.solveSuperMarketQueue(new int[] { 2, 2, 3, 3, 4, 4 }, 2));
+        assertEquals(9, Solution.solveSuperMarketQueue(new int[]{2, 2, 3, 3, 4, 4}, 2));
     }
 
     @Test
     public void testEmptyArray() {
-        assertEquals(0, Solution.solveSuperMarketQueue(new int[] {}, 1));
+        assertEquals(0, Solution.solveSuperMarketQueue(new int[]{}, 1));
     }
 
     @Test
     public void testSingleTillManyCustomers() {
-        assertEquals(15, Solution.solveSuperMarketQueue(new int[] { 1, 2, 3, 4, 5 }, 1));
-    }}
+        assertEquals(15, Solution.solveSuperMarketQueue(new int[]{1, 2, 3, 4, 5}, 1));
+    }
+
+    @Test
+    public void testZeros() throws Exception {
+        assertThat(Solution.zeros(0), is(0));
+        assertThat(Solution.zeros(6), is(1));
+        assertThat(Solution.zeros(14), is(2));
+        assertThat(Solution.zeros(14000), is(3498));
+    }
+}

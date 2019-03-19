@@ -1,4 +1,4 @@
-package Fundamentals;
+package codewars;
 
 import java.util.ArrayList;
 
@@ -72,4 +72,23 @@ public class Solution {
         }
         return result;
     }
+
+    public static int zeros(int n) {
+        // 此算法基于
+        // 1~n 有 n/2 个数能被2整除。所有数除以2以后，又有 1/2 个数能被2整除，也就是 n/4 个数能被2整除
+        // 通过 n/2 + n/4 + n/8 + ... 能求出能被 2 整除多少次
+        // 同理
+        // 通过 n/5 + n/25 + n/125 + ... 能求出能被 5 整除多少次
+        // 一个2，一个5配对确定能被10整除。由于2的个数远远大于5的个数。
+        // 所以5的个数即是0的个数
+        int countOf0 = 0;
+        int divisor = 5;
+        int count;
+        while ((count = n / divisor) > 0) {
+            countOf0 += count;
+            divisor *= 5;
+        }
+        return countOf0;
+    }
+
 }
