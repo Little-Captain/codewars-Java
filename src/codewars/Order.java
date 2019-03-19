@@ -23,7 +23,7 @@ public class Order {
             }
         });
         String result = "";
-        for (String word: wordArray) {
+        for (String word : wordArray) {
             result += " " + word;
         }
         return result.trim();
