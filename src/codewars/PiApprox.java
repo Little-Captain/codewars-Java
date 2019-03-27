@@ -1,10 +1,5 @@
 package codewars;
 
-import org.junit.Test;
-
-import java.util.HashMap;
-import java.util.Map;
-
 public class PiApprox {
 
     public static String iterPi2String(Double epsilon) {
