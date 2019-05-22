@@ -2,6 +2,8 @@ package codewars;
 
 import org.junit.Test;
 
+import java.util.Locale;
+
 import static org.junit.Assert.assertEquals;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
@@ -90,5 +92,29 @@ public class SolutionTest {
         assertEquals("2-1-4-7-48-3-64-7", Solution.dashatize(Integer.MAX_VALUE));
         assertEquals("2-1-4-7-48-3-648", Solution.dashatize(Integer.MIN_VALUE));
         assertEquals("1-1-1-1-1-1-1-1-1-1", Solution.dashatize(-1111111111));
+    }
+
+    @Test
+    public void testExamples() {
+        shouldParse("#80FFA0",   new RGB(128, 255, 160));
+        shouldParse("#3B7",      new RGB( 51, 187, 119));
+    }
+
+    /* Test helper functions */
+
+    private void shouldParse(String color, RGB expected) {
+        assertRgbEquals(color, expected, new HtmlColorParser(null).parse(color));
+    }
+
+    private static void assertRgbEquals(String input, RGB expected, RGB actual) throws AssertionError {
+        try {
+            System.out.printf("input: \"%s\"", input);
+            assertEquals(expected, actual);
+            System.out.println(" => pass!");
+        } catch (AssertionError e) {
+            String message = String.format(Locale.ENGLISH,
+                    "expected: %s\nactual  : %s", expected, actual);
+            throw new AssertionError(message, e);
+        }
     }
 }
