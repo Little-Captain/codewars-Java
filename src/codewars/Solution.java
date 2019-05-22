@@ -1,6 +1,7 @@
 package codewars;
 
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 public class Solution {
 
@@ -89,6 +90,14 @@ public class Solution {
             divisor *= 5;
         }
         return countOf0;
+    }
+
+    public static String dashatize(int num) {
+        return Integer
+                .toString(num)
+                .replaceAll("(1|3|5|7|9)", "-$1-")
+                .replaceAll("--", "-")
+                .replaceAll("^-|-$", "");
     }
 
 }

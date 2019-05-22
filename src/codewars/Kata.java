@@ -65,4 +65,21 @@ public class Kata {
         }
         return result;
     }
+
+    // 复利原理
+    public static void main(String[] args) {
+        int n = 40;
+        long base = 1;
+        double rate = 2;
+        ArrayList<Long> list = new ArrayList<>();
+        for (int i = 0; i < n; ++i) {
+            list.add(base);
+            base = (long) Math.ceil(base * rate);
+        }
+        System.out.print("[");
+        for (int i = 0; i < list.size(); ++i) {
+            System.out.println("" + (i + 1) + ":" + list.get(i) + ",");
+        }
+        System.out.println("]");
+    }
 }
