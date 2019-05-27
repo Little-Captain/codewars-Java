@@ -1,6 +1,7 @@
 package codewars;
 
-import java.util.ArrayList;
+import java.util.*;
+import java.util.stream.Stream;
 
 public class Kata {
 
@@ -81,5 +82,19 @@ public class Kata {
             System.out.println("" + (i + 1) + ":" + list.get(i) + ",");
         }
         System.out.println("]");
+    }
+
+    public static String high(String s) {
+        String[] words = s.split(" ");
+        Integer[] scores = Arrays
+                .stream(words)
+                .parallel()
+                .map(w -> w.chars().map(c -> c - 'a' + 1).sum())
+                .toArray(Integer[]::new);
+        Integer maxScore = Stream.of(scores).parallel().max(Integer::compareTo).orElse(0);
+        for (int i = 0; i < scores.length; ++i) {
+            if (scores[i].equals(maxScore)) return words[i];
+        }
+        return "";
     }
 }
