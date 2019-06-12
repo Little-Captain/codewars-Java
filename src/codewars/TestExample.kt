@@ -5,6 +5,7 @@ import kotlin.test.assertEquals
 import org.junit.Test
 import java.math.BigInteger
 import kotlin.math.pow
+import kotlin.math.sqrt
 
 fun numberToString(num: Int) = "$num"
 
@@ -25,36 +26,36 @@ fun highAndLow(numbers: String): String {
 
 fun makeComplement(dna: String): String {
     return dna
-            .map {
-                when (it) {
-                    'A' -> 'T'
-                    'T' -> 'A'
-                    'C' -> 'G'
-                    else -> 'C'
-                }
+        .map {
+            when (it) {
+                'A' -> 'T'
+                'T' -> 'A'
+                'C' -> 'G'
+                else -> 'C'
             }
-            .joinToString("")
+        }
+        .joinToString("")
 }
 
 fun digPow(n: Int, p: Int) =
-        n
-                .toString()
-                .mapIndexed { i, c -> c.toString().toDouble().pow(p + i).toLong() }
-                .sum()
-                .let { if (it % n.toLong() == 0L) (it / n.toLong()).toInt() else -1 }
+    n
+        .toString()
+        .mapIndexed { i, c -> c.toString().toDouble().pow(p + i).toLong() }
+        .sum()
+        .let { if (it % n.toLong() == 0L) (it / n.toLong()).toInt() else -1 }
 
 fun findShort(s: String) = s.split(Regex("\\s+")).minBy(String::length)!!.length
 
 fun spinWords(sentence: String) =
-        sentence
-                .split(" ")
-                .joinToString(" ") { if (it.length >= 5) it.reversed() else it }
+    sentence
+        .split(" ")
+        .joinToString(" ") { if (it.length >= 5) it.reversed() else it }
 
 fun lastDigit(base: BigInteger, exponent: BigInteger): Int {
     if (exponent.compareTo(BigInteger.ZERO) == 0) return 1
     val map = mapOf(
-            2 to arrayOf(2, 4, 8, 6), 3 to arrayOf(3, 9, 7, 1), 4 to arrayOf(4, 6),
-            7 to arrayOf(7, 9, 3, 1), 8 to arrayOf(8, 4, 2, 6), 9 to arrayOf(9, 1)
+        2 to arrayOf(2, 4, 8, 6), 3 to arrayOf(3, 9, 7, 1), 4 to arrayOf(4, 6),
+        7 to arrayOf(7, 9, 3, 1), 8 to arrayOf(8, 4, 2, 6), 9 to arrayOf(9, 1)
     )
     return when (val num = base.toString().last().toString().toInt()) {
         0, 1, 5, 6 -> num
@@ -69,6 +70,34 @@ fun lastDigit(base: BigInteger, exponent: BigInteger): Int {
         else -> error("")
     }
 }
+
+fun findEvenIndex(arr: IntArray): Int {
+    for (i in arr.indices) {
+        if (arr.sliceArray(0 until i).sum() == arr.sliceArray(i + 1 until arr.size).sum()) return i
+    }
+    return if (arr.isEmpty()) 0 else -1
+}
+
+fun alphaSeq(str: String) =
+    str
+        .map(Char::toUpperCase)
+        .sorted()
+        .joinToString(",") { c -> c + c.toLowerCase().let { l -> String(CharArray(l - 'a') { l }) } }
+
+fun predictAge(vararg ages: Int) = (sqrt(ages.sumByDouble { 1.0 * it * it }) * 0.5).toInt()
+
+fun seven(n: Long): LongArray {
+    var result = n
+    var count = 0L
+    while (result > 99) {
+        ++count
+        result = result / 10 - result % 10 * 2
+    }
+    return longArrayOf(result, count)
+}
+
+// 递归实现
+fun seven1(n: Long, c: Long = 0): LongArray = if (n > 99) seven1(n / 10 - n % 10 * 2, c + 1) else longArrayOf(n, c)
 
 class TestExample {
 
@@ -90,6 +119,27 @@ class TestExample {
         assertEquals("This is rehtona test", spinWords("This is another test"))
         assertEquals("You are tsomla to the last test", spinWords("You are almost to the last test"))
         assertEquals("Just gniddik ereht is llits one more", spinWords("Just kidding there is still one more"))
+    }
+
+    @Test
+    fun test4() {
+        assertEquals(0, findEvenIndex(intArrayOf()))
+        assertEquals(3, findEvenIndex(intArrayOf(1, 2, 3, 4, 3, 2, 1)))
+        assertEquals(1, findEvenIndex(intArrayOf(1, 100, 50, -51, 1, 1)))
+        assertEquals(-1, findEvenIndex(intArrayOf(1, 2, 3, 4, 5, 6)))
+        assertEquals(3, findEvenIndex(intArrayOf(20, 10, 30, 10, 10, 15, 35)))
+        assertEquals(-1, findEvenIndex(intArrayOf(-8505, -5130, 1926, -9026)))
+        assertEquals(1, findEvenIndex(intArrayOf(2824, 1774, -1490, -9084, -9696, 23094)))
+        assertEquals(6, findEvenIndex(intArrayOf(4, 5, 6, 7, 8, 9, 10, 9, 8, 7, 6, 5, 4)))
+    }
+
+    @Test
+    fun test5() {
+        println("Basic Tests")
+        assertArrayEquals(longArrayOf(28, 7), seven1(477557101))
+        assertArrayEquals(longArrayOf(47, 7), seven1(477557102))
+        assertArrayEquals(longArrayOf(35, 1), seven1(371))
+        assertArrayEquals(longArrayOf(7, 2), seven1(1603))
     }
 
     @Test
@@ -133,6 +183,30 @@ class TestExample {
     }
 
     @Test
+    fun testFixed7() {
+        assertEquals(
+            "Eeeee,Ggggggg,Llllllllllll,Nnnnnnnnnnnnnn,Nnnnnnnnnnnnnn,Pppppppppppppppp,Qqqqqqqqqqqqqqqqq,Rrrrrrrrrrrrrrrrrr,Uuuuuuuuuuuuuuuuuuuuu,Xxxxxxxxxxxxxxxxxxxxxxxx,Zzzzzzzzzzzzzzzzzzzzzzzzzz",
+            alphaSeq("ZpglnRxqenU")
+        )
+        assertEquals(
+            "Bb,Eeeee,Ffffff,Ffffff,Ggggggg,Llllllllllll,Nnnnnnnnnnnnnn,Sssssssssssssssssss,Yyyyyyyyyyyyyyyyyyyyyyyyy,Yyyyyyyyyyyyyyyyyyyyyyyyy,Yyyyyyyyyyyyyyyyyyyyyyyyy",
+            alphaSeq("NyffsGeyylB")
+        )
+        assertEquals(
+            "Bb,Jjjjjjjjjj,Kkkkkkkkkkk,Mmmmmmmmmmmmm,Ooooooooooooooo,Qqqqqqqqqqqqqqqqq,Rrrrrrrrrrrrrrrrrr,Tttttttttttttttttttt,Uuuuuuuuuuuuuuuuuuuuu,Uuuuuuuuuuuuuuuuuuuuu,Vvvvvvvvvvvvvvvvvvvvvv",
+            alphaSeq("MjtkuBovqrU")
+        )
+        assertEquals(
+            "Dddd,Eeeee,Iiiiiiiii,Jjjjjjjjjj,Kkkkkkkkkkk,Mmmmmmmmmmmmm,Mmmmmmmmmmmmm,Nnnnnnnnnnnnnn,Ooooooooooooooo,Uuuuuuuuuuuuuuuuuuuuu,Vvvvvvvvvvvvvvvvvvvvvv",
+            alphaSeq("EvidjUnokmM")
+        )
+        assertEquals(
+            "Bb,Bb,Ccc,Ccc,Dddd,Eeeee,Hhhhhhhh,Iiiiiiiii,Nnnnnnnnnnnnnn,Vvvvvvvvvvvvvvvvvvvvvv,Xxxxxxxxxxxxxxxxxxxxxxxx",
+            alphaSeq("HbideVbxncC")
+        )
+    }
+
+    @Test
     fun exampleTests() {
         assertEquals(findSmallestInt(listOf(15, 20, 10, 17, 22, 9001)), 10)
     }
@@ -160,8 +234,30 @@ class TestExample {
         assertEquals(9, lastDigit(BigInteger("9"), BigInteger("7")))
         assertEquals(0, lastDigit(BigInteger("10"), BigInteger("10000000000")))
         assertEquals(1, lastDigit(BigInteger("10"), BigInteger("0")))
-        assertEquals(1, lastDigit(BigInteger("9435756757744477447576867898089079079808908347583277453475"), BigInteger("0")))
-        assertEquals(6, lastDigit(BigInteger("1606938044258990275541962092341162602522202993782792835301376"), BigInteger("2037035976334486086268445688409378161051468393665936250636140449354381299763336706183397376")))
-        assertEquals(7, lastDigit(BigInteger("3715290469715693021198967285016729344580685479654510946723"), BigInteger("68819615221552997273737174557165657483427362207517952651")))
+        assertEquals(
+            1,
+            lastDigit(BigInteger("9435756757744477447576867898089079079808908347583277453475"), BigInteger("0"))
+        )
+        assertEquals(
+            6,
+            lastDigit(
+                BigInteger("1606938044258990275541962092341162602522202993782792835301376"),
+                BigInteger("2037035976334486086268445688409378161051468393665936250636140449354381299763336706183397376")
+            )
+        )
+        assertEquals(
+            7,
+            lastDigit(
+                BigInteger("3715290469715693021198967285016729344580685479654510946723"),
+                BigInteger("68819615221552997273737174557165657483427362207517952651")
+            )
+        )
+    }
+
+    @org.junit.Test
+    @Throws(Exception::class)
+    fun basicTest() {
+        assertEquals(86, predictAge(65, 60, 75, 55, 60, 63, 64, 45))
+        assertEquals(79, predictAge(32, 54, 76, 65, 34, 63, 64, 45))
     }
 }
