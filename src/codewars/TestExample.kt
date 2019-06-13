@@ -4,6 +4,7 @@ import org.junit.Assert.assertArrayEquals
 import kotlin.test.assertEquals
 import org.junit.Test
 import java.math.BigInteger
+import java.util.*
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -99,7 +100,24 @@ fun seven(n: Long): LongArray {
 // 递归实现
 fun seven1(n: Long, c: Long = 0): LongArray = if (n > 99) seven1(n / 10 - n % 10 * 2, c + 1) else longArrayOf(n, c)
 
+fun generateColor(r: Random) = "#%06x".format(r.nextInt(0x1000000))
+
+/**
+ * 有时候，先用循环实现，再改写为简洁的序列形式，更容易
+ * 因为往往，一开始就用序列实现，可能不那么容易实现
+ */
+fun cycle(n: Int) =
+    if (n % 2 == 0 || n % 5 == 0) -1
+    else generateSequence(10 % n) { it * 10 % n }
+        .withIndex()
+        .first { it.value == 1 }
+        .index + 1
+
 class TestExample {
+
+    @Test
+    fun test_common() {
+    }
 
     @Test
     fun test1() {
@@ -259,5 +277,34 @@ class TestExample {
     fun basicTest() {
         assertEquals(86, predictAge(65, 60, 75, 55, 60, 63, 64, 45))
         assertEquals(79, predictAge(32, 54, 76, 65, 34, 63, 64, 45))
+    }
+
+    @Test
+    fun basicTest1() {
+        for (i in 0..9) {
+            val x = generateColor(Random())
+            println(x)
+            assertEquals("#", x.substring(0, 1))
+        }
+    }
+
+    private fun dotest(n: Int, expected: Int) {
+        val actual = cycle(n)
+        assertEquals(expected.toLong(), actual.toLong())
+    }
+
+    @Test
+    fun fixedTests() {
+        dotest(3, 1)
+        dotest(33, 2)
+        dotest(18118, -1)
+        dotest(5, -1)
+        dotest(13, 6)
+        dotest(21, 6)
+        dotest(27, 3)
+        dotest(33, 2)
+        dotest(37, 3)
+        dotest(94, -1)
+        dotest(317707, 24438)
     }
 }
