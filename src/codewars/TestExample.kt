@@ -113,10 +113,77 @@ fun cycle(n: Int) =
         .first { it.value == 1 }
         .index + 1
 
+fun decomposeSingleStrand1(singleStand: String): String {
+    if (singleStand.isEmpty() || singleStand.length == 1) {
+        return "Frame 1: $singleStand\nFrame 2: $singleStand\nFrame 3: $singleStand"
+    }
+    val frame1 = singleStand.replace(Regex("(.{3})"), "$1 ").trimEnd()
+    val frame2 = "${singleStand.substring(0, 1)} ${singleStand.substring(1, singleStand.length).replace(
+        Regex("(.{3})"),
+        "$1 "
+    ).trimEnd()}"
+    if (singleStand.length == 2) {
+        return "Frame 1: $singleStand\nFrame 2: $frame2\nFrame 3: $singleStand"
+    }
+    val frame3 = "${singleStand.substring(0, 2)} ${singleStand.substring(2, singleStand.length).replace(
+        Regex("(.{3})"),
+        "$1 "
+    ).trimEnd()}"
+    return "Frame 1: $frame1\nFrame 2: $frame2\nFrame 3: $frame3"
+}
+
+fun decomposeDoubleStrand2(doubleStrand: String): String {
+    return "hello world!"
+}
+
+// Tricky Kotlin #0: extension constructor
+fun Int(s: String): Int = s.let { s.toInt() }
+
+fun Long(s: String): Long = s.let { s.toLong() }
+fun Double(s: String): Double = s.let { s.toDouble() }
+
+fun comp(a: IntArray?, b: IntArray?): Boolean {
+    if (a == null || b == null) return false
+    val a = a.distinct()
+    val b = b.distinct()
+    if (a.size != b.size || a.isEmpty()) return false
+    val tmp = a.map { it * it }
+    for (i in tmp) {
+        if (!b.contains(i)) {
+            return false
+        }
+    }
+    return true
+}
+
 class TestExample {
 
     @Test
     fun test_common() {
+        val a1 = intArrayOf(121, 144, 19, 161, 19, 144, 19, 11)
+        val a2 = intArrayOf(11 * 11, 121 * 121, 144 * 144, 19 * 19, 161 * 161, 19 * 19, 144 * 144, 19 * 19)
+
+        assertEquals(true, comp(a1, a2))
+    }
+
+    @Test
+    fun basic1() {
+        assertEquals(
+            decomposeSingleStrand1("AGGTGACACCGCAAGCCTTATATTAGC"),
+            "Frame 1: AGG TGA CAC CGC AAG CCT TAT ATT AGC\nFrame 2: A GGT GAC ACC GCA AGC CTT ATA TTA GC\nFrame 3: AG GTG ACA CCG CAA GCC TTA TAT TAG C"
+        )
+        assertEquals(decomposeSingleStrand1(""), "Frame 1: \nFrame 2: \nFrame 3: ")
+        assertEquals(decomposeSingleStrand1("A"), "Frame 1: A\nFrame 2: A\nFrame 3: A")
+        assertEquals(decomposeSingleStrand1("AG"), "Frame 1: AG\nFrame 2: A G\nFrame 3: AG")
+        assertEquals(decomposeSingleStrand1("AGG"), "Frame 1: AGG\nFrame 2: A GG\nFrame 3: AG G")
+    }
+
+    @Test
+    fun basic2() {
+        assertEquals(
+            "Frame 1: AGG TGA CAC CGC AAG CCT TAT ATT AGC\nFrame 2: A GGT GAC ACC GCA AGC CTT ATA TTA GC\nFrame 3: AG GTG ACA CCG CAA GCC TTA TAT TAG C\n\nReverse Frame 1: GCT AAT ATA AGG CTT GCG GTG TCA CCT\nReverse Frame 2: G CTA ATA TAA GGC TTG CGG TGT CAC CT\nReverse Frame 3: GC TAA TAT AAG GCT TGC GGT GTC ACC T",
+            decomposeDoubleStrand2("AGGTGACACCGCAAGCCTTATATTAGC")
+        )
     }
 
     @Test
@@ -306,5 +373,15 @@ class TestExample {
         dotest(37, 3)
         dotest(94, -1)
         dotest(317707, 24438)
+    }
+
+    @Test
+    fun testInt() {
+        val r = Random(System.currentTimeMillis())
+        (0..100).forEach {
+            r.nextInt().let {
+                // assertEquals(it, kotlin.Int(it.toString()))
+            }
+        }
     }
 }
