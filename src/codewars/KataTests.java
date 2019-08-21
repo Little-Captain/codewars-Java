@@ -1,6 +1,7 @@
 package codewars;
 
 import org.junit.Test;
+import sun.security.krb5.internal.tools.Ktab;
 
 import static org.junit.Assert.*;
 
@@ -23,5 +24,22 @@ public class KataTests {
         assertFalse(Kata.nameInStr("Under a sea", "chris"));
         assertFalse(Kata.nameInStr("A crew that boards the ship", "chris"));
         assertFalse(Kata.nameInStr("A live son", "Allison"));
+    }
+
+    String[][] tests = {new String[]{"++++", "*p += 4;\n"},
+            new String[]{"----", "*p -= 4;\n"},
+            new String[]{">>>>", "p += 4;\n"},
+            new String[]{"<<<<", "p -= 4;\n"},
+            new String[]{".", "putchar(*p);\n"},
+            new String[]{",", "*p = getchar();\n"},
+            new String[]{"[[[]]", "Error!"},
+            new String[]{"[][]", ""},
+            new String[]{"[.]", "if (*p) do {\n  putchar(*p);\n} while (*p);\n"}};
+
+    @Test
+    public void sampleTests() {
+        for (String[] actExp : tests)
+            System.out.println(Kata.translateToC(actExp[0]));
+//        assertEquals(actExp[1], Kata.translateToC(actExp[0]));
     }
 }

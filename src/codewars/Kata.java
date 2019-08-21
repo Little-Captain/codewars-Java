@@ -1,6 +1,10 @@
 package codewars;
 
+import com.sun.org.apache.xerces.internal.impl.xpath.regex.Match;
+
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class Kata {
@@ -100,5 +104,84 @@ public class Kata {
 
     public static boolean nameInStr(String str, String name) {
         return str.matches("." + name.replaceAll("(.)", "*$1.") + "*");
+    }
+
+    // Brainfuck Translator
+    public static String translateToC(String input) {
+        // "++++", "*p += 4;\n"
+        // "----", "*p -= 4;\n"
+        // ">>>>", "p += 4;\n"
+        // "<<<<", "p -= 4;\n"
+        // ".", "putchar(*p);\n"
+        // ",", "*p = getchar();\n"
+        // "[[[]]", "Error!"
+        // "[][]", ""
+        // "[.]", "if (*p) do {\n  putchar(*p);\n} while (*p);\n"
+
+        // + -> *p += 1;
+        // - -> *p -= 1;
+        // > -> p += 1;
+        // < -> p -= 1;
+        // . -> putchar(*p);
+        // , -> getchar(*p);
+        // [ -> if (*p) do {\n
+        // ] -> } while (*p);
+
+        // +- -+ <> >< []
+
+        // 1. 判断语法是否正确
+        int left = 0;
+        char[] chars = input.replaceAll("[^\\[\\]]", "").toCharArray();
+        for (char aChar : chars) {
+            if (aChar == '[') ++left;
+            if (aChar == ']') --left;
+        }
+        if (left != 0) return "Error!";
+
+        // 2.1. 移除所有无效字符
+        String brainfuck = input.replaceAll("[^+\\-><.,\\[\\]]", "");
+        // 2.2. 移除所有多余代码
+        while (true) {
+            String tmp = brainfuck.replaceAll("(\\+-|-\\+|<>|><|\\[])", "");
+            if (tmp.length() == brainfuck.length()) {
+                break;
+            } else {
+                brainfuck = tmp;
+            }
+        }
+
+        // 3. 处理 + - > <
+        // +
+        Pattern p = Pattern.compile("(\\+{2,})");
+        Matcher m = p.matcher(brainfuck);
+        while (m.find()) {
+            brainfuck = brainfuck.replaceFirst("\\+{2,}", String.format("+%d", m.group(0).length()));
+            m = p.matcher(brainfuck);
+        }
+        // -
+        p = Pattern.compile("(-{2,})");
+        m = p.matcher(brainfuck);
+        while (m.find()) {
+            brainfuck = brainfuck.replaceFirst("-{2,}", String.format("-%d", m.group(0).length()));
+            m = p.matcher(brainfuck);
+        }
+        // >
+        p = Pattern.compile("(>{2,})");
+        m = p.matcher(brainfuck);
+        while (m.find()) {
+            brainfuck = brainfuck.replaceFirst(">{2,}", String.format(">%d", m.group(0).length()));
+            m = p.matcher(brainfuck);
+        }
+        // <
+        p = Pattern.compile("(<{2,})");
+        m = p.matcher(brainfuck);
+        while (m.find()) {
+            brainfuck = brainfuck.replaceFirst("<{2,}", String.format("<%d", m.group(0).length()));
+            m = p.matcher(brainfuck);
+        }
+
+        // 4. 生成 C 代码
+
+        return brainfuck;
     }
 }
