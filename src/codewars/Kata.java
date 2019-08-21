@@ -97,4 +97,8 @@ public class Kata {
         }
         return "";
     }
+
+    public static boolean nameInStr(String str, String name) {
+        return str.matches("." + name.replaceAll("(.)", "*$1.") + "*");
+    }
 }
